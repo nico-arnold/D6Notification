@@ -22,4 +22,16 @@
     <string name="editTextHint">Custom Command EditText</string>
     <string name="CustomCommandText">AT+PUSH=0,1234567890,0,1</string>
     <string name="customCmdButtonText">Custom\nCMD</string>
+    <string name="apply">Apply</string>
+    <string name="back">Back</string>
+    <string name="mqtt_settings">MQTT Settings</string>
+    <string name="no_data_saved">No data saved.</string>
+    <string name="name">Name</string>
+    <string name="name_label">Name:</string>
+    <string name="_12345678">12345678</string>
+    <string name="mqtt_pw">MQTT PW:</string>
+    <string name="user">User</string>
+    <string name="mqtt_user_label">MQTT User:</string>
+    <string name="mqtt_server_label">MQTT Server:</string>
+    <string name="server_url">Server URL</string>
 </resources>
