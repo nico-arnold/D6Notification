@@ -55,6 +55,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     //Buttons
     ImageButton DeviceImageButton;
     ImageButton SettingsButton;
+    ImageButton MQTTButton;
     Button ClearLogButton;
     CheckBox NotificationsCheckBox;
     CheckBox LogCheckBox;
@@ -70,6 +71,9 @@ public class MainActivity extends Activity implements View.OnClickListener {
     public void onClick(View v) {
         if (v.getId() == R.id.SettingsButtonID) {
             Intent intent = new Intent(this, com.atcnetz.de.notification.Settings.class);
+            startActivityForResult(intent, 34);
+        }else if (v.getId() == R.id.MQTTButtonID) {
+            Intent intent = new Intent(this, com.atcnetz.de.notification.MQTT.class);
             startActivityForResult(intent, 34);
         } else if (v.getId() == R.id.clearLogButtonID) {
             clearLog();
@@ -100,6 +104,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         //Buttons
         SettingsButton = findViewById(R.id.SettingsButtonID);
         SettingsButton.setOnClickListener(this);
+        MQTTButton = findViewById(R.id.MQTTButtonID);
+        MQTTButton.setOnClickListener(this);
         ClearLogButton = findViewById(R.id.clearLogButtonID);
         ClearLogButton.setOnClickListener(this);
         NotificationsCheckBox = findViewById(R.id.notificationCheckBoxID);

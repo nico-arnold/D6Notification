@@ -35,8 +35,17 @@
             android:launchMode="singleInstance"
             android:exported="true" />
         <activity
+            android:name=".MQTTSettingsActivity"
+            android:launchMode="singleInstance"
+            android:exported="true" />
+        <activity
             android:name=".Settings"
             android:label="Settings"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".MQTT"
+            android:label="MQTT"
             android:launchMode="singleInstance"
             android:windowSoftInputMode="stateHidden" />
         <activity
