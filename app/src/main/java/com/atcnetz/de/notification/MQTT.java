@@ -31,7 +31,7 @@ public class MQTT extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mqtt_settings);
-        prefs = getSharedPreferences("Settings", MODE_PRIVATE);
+        prefs = getSharedPreferences("MQTTSettings", MODE_PRIVATE);
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
     }
 
@@ -47,7 +47,7 @@ public class MQTT extends Activity {
 
 
     public void sendBLEcmd(String message) {
-        Intent intent = new Intent("MSGtoServiceIntentBLEcmd");
+        Intent intent = new Intent("MSGtoServiceIntentMQTTcmd");
         if (message != null)
             intent.putExtra("MSGtoService", message);
         localBroadcastManager.sendBroadcast(intent);
