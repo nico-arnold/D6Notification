@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 32
+    namespace = "com.atcnetz.de.notification"
     defaultConfig {
         applicationId "com.atcnetz.de.notification"
         minSdkVersion 21
@@ -33,6 +34,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui:2.4.1'
     annotationProcessor "com.github.permissions-dispatcher:permissionsdispatcher-processor:4.9.2"
     implementation 'com.google.android.material:material:1.5.0'
-    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.1.0'
+    implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
     implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 }

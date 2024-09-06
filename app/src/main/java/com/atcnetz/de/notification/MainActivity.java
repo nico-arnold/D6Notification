@@ -95,6 +95,13 @@ public class MainActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Intent mqttServiceIntent = new Intent(this, MQTTservice.class);
+        /*mqttServiceIntent.setAction("PUBLISH");
+        mqttServiceIntent.putExtra("topic", "example/topic");
+        mqttServiceIntent.putExtra("message", "Hello, MQTT World!");*/
+        startService(mqttServiceIntent);
+
         setContentView(R.layout.activity_main);
         //Textviews
         tvContent = (TextView) findViewById(R.id.tv_content);
