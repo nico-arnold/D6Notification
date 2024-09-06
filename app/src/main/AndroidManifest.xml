@@ -75,6 +75,8 @@
             android:name=".MQTTservice"
             android:foregroundServiceType="connectedDevice"
             android:enabled="true" />
+        <service android:name="org.eclipse.paho.android.service.MqttService">
+        </service>
 
         <activity
             android:name=".ScanActivity"

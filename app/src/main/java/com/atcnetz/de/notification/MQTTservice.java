@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
-import org.eclipse.paho.android.service.MqttAndroidClient;
+//import org.eclipse.paho.android.service.MqttAndroidClient;
+import info.mqtt.android.service.Ack;
+import info.mqtt.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
@@ -22,7 +24,7 @@ public class MQTTservice extends Service {
     private static final String TAG = "MQTTservice";
     private MqttAndroidClient mqttAndroidClient;
     private final String serverUri = "tcp://test.mosquitto.org:1883"; // Replace with your broker's URI
-    private final String clientId = MqttClient.generateClientId();
+    private final String clientId = "Android_Mqtt";// + System.currentTimeMillis();
     private final String subscriptionTopic = "nico/example/subTopic"; // Replace with your topic
 
     @Override
@@ -32,7 +34,9 @@ public class MQTTservice extends Service {
     }
 
     private void initializeMqtt() {
-        mqttAndroidClient = new MqttAndroidClient(getApplicationContext(), serverUri, clientId);
+        //mqttAndroidClient = new MqttAndroidClient(getApplicationContext(), serverUri, clientId);
+        mqttAndroidClient = new MqttAndroidClient(getApplicationContext(), serverUri, clientId, Ack.AUTO_ACK);
+
 
         mqttAndroidClient.setCallback(new MqttCallback() {
             @Override
@@ -71,7 +75,7 @@ public class MQTTservice extends Service {
 
                 }
             });
-        } catch (MqttException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -89,7 +93,7 @@ public class MQTTservice extends Service {
                     Log.d(TAG, "Failed to subscribe to topic");
                 }
             });
-        } catch (MqttException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -105,7 +109,7 @@ public class MQTTservice extends Service {
             } else {
                 Log.d(TAG, "Client is not connected, unable to publish message");
             }
-        } catch (MqttException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             Log.d(TAG, "Error Publishing: " + e.getMessage());
         }
@@ -132,7 +136,7 @@ public class MQTTservice extends Service {
         super.onDestroy();
         try {
             mqttAndroidClient.disconnect();
-        } catch (MqttException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }

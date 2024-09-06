@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 32
+    compileSdk 33
     namespace = "com.atcnetz.de.notification"
     defaultConfig {
         applicationId "com.atcnetz.de.notification"
@@ -35,6 +35,8 @@ dependencies {
     annotationProcessor "com.github.permissions-dispatcher:permissionsdispatcher-processor:4.9.2"
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5'
-    implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+    //#implementation 'org.eclipse.paho:org.eclipse.paho.android.service:1.1.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.github.hannesa2:paho.mqtt.android:3.6.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 }
