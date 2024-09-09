@@ -23,19 +23,24 @@ public class MQTTservice extends Service {
 
     private static final String TAG = "MQTTservice";
     private MqttAndroidClient mqttAndroidClient;
-    private final String serverUri = "tcp://test.mosquitto.org:1883"; // Replace with your broker's URI
-    private final String clientId = "Android_Mqtt";// + System.currentTimeMillis();
-    private final String subscriptionTopic = "nico/example/subTopic"; // Replace with your topic
+    private final String clientId = "Android_Mqtt".concat(String.valueOf(System.currentTimeMillis()));
+    //private final String serverUri = "tcp://test.mosquitto.org:1883"; // Replace with your broker's URI
+    private final String logintopic = "nico/atcwatch/hello";
+    private final String subscriptionTopic = logintopic;//"nico/example/subTopic"; // Replace with your topic
+    boolean connected = false;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        initializeMqtt();
+        Log.d(TAG, "Service started.");
     }
 
-    private void initializeMqtt() {
+    private void initializeMqtt(String mqttServer, String mqttUser, String mqttPw) {
+        if (mqttAndroidClient != null && mqttAndroidClient.isConnected()){
+            disconnectMqtt();
+        }
         //mqttAndroidClient = new MqttAndroidClient(getApplicationContext(), serverUri, clientId);
-        mqttAndroidClient = new MqttAndroidClient(getApplicationContext(), serverUri, clientId, Ack.AUTO_ACK);
+        mqttAndroidClient = new MqttAndroidClient(getApplicationContext(), mqttServer, clientId, Ack.AUTO_ACK);
 
 
         mqttAndroidClient.setCallback(new MqttCallback() {
@@ -63,7 +68,8 @@ public class MQTTservice extends Service {
             mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.d(TAG, "Connected to broker");
+                    Log.d(TAG, "Connected to broker with id " + mqttAndroidClient.getClientId());
+                    publishMessage(logintopic, clientId);
                     subscribeToTopic();
                 }
 
@@ -75,6 +81,21 @@ public class MQTTservice extends Service {
 
                 }
             });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void disconnectMqtt(){
+        try {
+            if (mqttAndroidClient != null){
+                if (mqttAndroidClient.isConnected()){
+                    Log.d(TAG, "Disconnecting...");
+                    mqttAndroidClient.disconnect();
+                }else{
+                    Log.d(TAG, "Not connected, not disconnecting.");
+                }
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -119,7 +140,23 @@ public class MQTTservice extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && intent.getAction() != null) {
-            if (intent.getAction().equals("PUBLISH")) {
+            if (intent.getAction().equals("MQTT_CONNECT")) {
+                String server = intent.getStringExtra("MQTT_Server");
+                String user = intent.getStringExtra("MQTT_User");
+                String pass = intent.getStringExtra("MQTT_Pass");
+                initializeMqtt(server, user, pass);
+            }
+            if (intent.getAction().equals("MQTT_DISCONNECT")) {
+                if (mqttAndroidClient != null) {
+                    if (mqttAndroidClient.isConnected()) {
+                        Log.d(TAG, "1Connected");
+                    } else {
+                        Log.d(TAG, "1Disconnected");
+                    }
+                    disconnectMqtt();
+                }
+            }
+            if (intent.getAction().equals("MQTT_PUBLISH")) {
                 String topic = intent.getStringExtra("topic");
                 String message = intent.getStringExtra("message");
                 if (topic != null && message != null) {
@@ -130,15 +167,10 @@ public class MQTTservice extends Service {
         return START_STICKY;
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        try {
-            mqttAndroidClient.disconnect();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        disconnectMqtt();
     }
 
     @Override

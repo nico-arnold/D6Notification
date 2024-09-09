@@ -33,6 +33,11 @@ public class MQTTSettingsActivity extends AppCompatActivity {
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
         initMQTTSettings();
 
+        Intent mqttServiceIntent = new Intent(this, MQTTservice.class);
+        mqttServiceIntent.setAction("PUBLISH");
+        mqttServiceIntent.putExtra("topic", "example/topic");
+        mqttServiceIntent.putExtra("message", "Hello, MQTT World!");
+        startService(mqttServiceIntent);
     }
 
     void initMQTTSettings() {
@@ -57,11 +62,29 @@ public class MQTTSettingsActivity extends AppCompatActivity {
                 //editor = getSharedPreferences("Settings", MODE_PRIVATE).edit();
                 //editor.putInt("DisplayMovement", 0);
                 //editor.apply();
-                Log.d(TAG, "Testing MQTT:\n\t" + text_mqtt_server.getText() + "\n\t" + text_mqtt_user.getText() + "\n\t" + text_mqtt_pw.getText() + "\n\t" + text_user_name.getText());
+                String server = text_mqtt_server.getText().toString();
+                String user = text_mqtt_user.getText().toString();
+                String pass = text_mqtt_pw.getText().toString();
+                Log.d(TAG, "Testing MQTT:\n\t" + server + "\n\t" + user + "\n\t" + pass + "\n\t" + text_user_name.getText());
+
+                Intent mqttServiceIntent = new Intent(getApplicationContext(), MQTTservice.class);
+                mqttServiceIntent.setAction("MQTT_CONNECT");
+                mqttServiceIntent.putExtra("MQTT_Server", server);
+                mqttServiceIntent.putExtra("MQTT_User", user);
+                mqttServiceIntent.putExtra("MQTT_Pass", pass);
+                mqttServiceIntent.putExtra("message", "Hello, MQTT World!");
+                startService(mqttServiceIntent);
             }
         });
 
         Button btn_back = findViewById(R.id.backButtonID);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent mqttServiceIntent = new Intent(getApplicationContext(), MQTTservice.class);
+                mqttServiceIntent.setAction("MQTT_DISCONNECT");
+                startService(mqttServiceIntent);
+            }
+        });
     }
 
 
