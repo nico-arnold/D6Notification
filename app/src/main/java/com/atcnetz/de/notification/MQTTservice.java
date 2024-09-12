@@ -179,8 +179,7 @@ public class MQTTservice extends Service {
                 String user = intent.getStringExtra("MQTT_User");
                 String pass = intent.getStringExtra("MQTT_Pass");
                 initializeMqtt(server, user, pass);
-            }
-            if (intent.getAction().equals("MQTT_DISCONNECT")) {
+            }else if (intent.getAction().equals("MQTT_DISCONNECT")) {
                 if (mqttAndroidClient != null) {
                     if (mqttAndroidClient.isConnected()) {
                         Log.d(TAG, "1Connected");
@@ -189,12 +188,16 @@ public class MQTTservice extends Service {
                     }
                     disconnectMqtt();
                 }
-            }
-            if (intent.getAction().equals("MQTT_PUBLISH")) {
+            }else if (intent.getAction().equals("MQTT_PUBLISH")) {
                 String topic = intent.getStringExtra("topic");
                 String message = intent.getStringExtra("message");
                 if (topic != null && message != null) {
                     publishMessage(topic, message);
+                }
+            }else if (intent.getAction().equals("MQTT_ALERT")) {
+                String alertLevel = intent.getStringExtra("alertLevel");
+                if (alertLevel != null) {
+                    publishMessage(alerttopic, alertLevel);
                 }
             }
         }

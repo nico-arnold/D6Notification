@@ -124,7 +124,7 @@ public class MQTTSettingsActivity extends AppCompatActivity {
         Button btn_back = findViewById(R.id.backButtonID);
         btn_back.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Bundle data = new Bundle();
+                /*Bundle data = new Bundle();
                 data.putString("topic", "nico/atcwatch/hello");
                 data.putString("message", "test123");
                 Message msg = Message.obtain(null, MQTTservice.MSG_MQTT_SEND, 0, 0);
@@ -133,10 +133,11 @@ public class MQTTSettingsActivity extends AppCompatActivity {
                     mMessenger.send(msg);
                 } catch (RemoteException e) {
                     Log.e(TAG, e.getMessage());
-                }
-                /*Intent mqttServiceIntent = new Intent(getApplicationContext(), MQTTservice.class);
-                mqttServiceIntent.setAction("MQTT_DISCONNECT");
-                startService(mqttServiceIntent);*/
+                }*/
+                Intent mqttServiceIntent = new Intent(getApplicationContext(), MQTTservice.class);
+                mqttServiceIntent.setAction("MQTT_ALERT");
+                mqttServiceIntent.putExtra("alertLevel", "1");
+                startService(mqttServiceIntent);
             }
         });
     }
