@@ -73,7 +73,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             Intent intent = new Intent(this, com.atcnetz.de.notification.Settings.class);
             startActivityForResult(intent, 34);
         }else if (v.getId() == R.id.MQTTButtonID) {
-            Intent intent = new Intent(this, com.atcnetz.de.notification.MQTT.class);
+            Intent intent = new Intent(this, com.atcnetz.de.notification.MQTTSettingsActivity.class);
             startActivityForResult(intent, 34);
         } else if (v.getId() == R.id.clearLogButtonID) {
             clearLog();
