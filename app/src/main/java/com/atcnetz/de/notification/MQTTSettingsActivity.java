@@ -98,25 +98,18 @@ public class MQTTSettingsActivity extends AppCompatActivity {
                 //editor = getSharedPreferences("Settings", MODE_PRIVATE).edit();
                 //editor.putInt("DisplayMovement", 0);
                 //editor.apply();
-                Log.d(TAG, "Clicked on Apply...");
                 String server = text_mqtt_server.getText().toString();
                 String user = text_mqtt_user.getText().toString();
                 String pass = text_mqtt_pw.getText().toString();
                 Log.d(TAG, "Testing MQTT:\n\t" + server + "\n\t" + user + "\n\t" + pass + "\n\t" + text_user_name.getText());
 
-                PendingIntent pendingResult = createPendingResult(100, new Intent(), 0);
-                //PendingIntent pendingResult = PendingIntent.getActivity(this, 100);
+                editor = prefs.edit();
+                editor.putString("MQTT_Server", server);
+                editor.putString("MQTT_User", user);
+                editor.putString("MQTT_Pass", pass);
+                editor.apply();
                 Intent mqttServiceIntent = new Intent(getApplicationContext(), MQTTservice.class);
-
-                //startService(intent);
-
-                //Intent mqttServiceIntent = new Intent(getApplicationContext(), MQTTservice.class);
-                mqttServiceIntent.setAction("MQTT_CONNECT");
-                mqttServiceIntent.putExtra("pendingIntent", pendingResult);
-                mqttServiceIntent.putExtra("MQTT_Server", server);
-                mqttServiceIntent.putExtra("MQTT_User", user);
-                mqttServiceIntent.putExtra("MQTT_Pass", pass);
-                mqttServiceIntent.putExtra("message", "Hello, MQTT World!");
+                mqttServiceIntent.setAction("MQTT_RECONNECT");
                 startService(mqttServiceIntent);
             }
         });

@@ -24,6 +24,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class MQTTservice extends Service {
 
@@ -50,6 +51,7 @@ public class MQTTservice extends Service {
         prefs = getSharedPreferences("MQTTSettings", MODE_PRIVATE);
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
         Log.d(TAG, "Service started.");
+        connectMqtt();
     }
 
     private void initializeMqtt(String mqttServer, String mqttUser, String mqttPw) {
@@ -68,8 +70,13 @@ public class MQTTservice extends Service {
 
             @Override
             public void messageArrived(String topic, MqttMessage message) {
-                Log.d(TAG, "Message arrived: " + message.toString());
-                sendBLEcmd("AT+ALMON=1");
+                Log.d(TAG, "Got message in topic " + topic + ": " + message.toString());
+                if (Objects.equals(topic, alerttopic)){
+                    Log.d(TAG, "Alert arrived: <" + message.toString()+">");
+                    String cmd = "AT+ALMON="+message.toString();
+                    Log.d(TAG, "Sending CMD: <" + cmd + ">");
+                    sendBLEcmd(cmd);
+                }
             }
 
             @Override
@@ -103,6 +110,13 @@ public class MQTTservice extends Service {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void connectMqtt(){
+        String server = prefs.getString("MQTT_Server", "");
+        String user = prefs.getString("MQTT_User", "");
+        String pass = prefs.getString("MQTT_Pass", "");
+        initializeMqtt(server, user, pass);
     }
 
     private void disconnectMqtt(){
@@ -175,11 +189,17 @@ public class MQTTservice extends Service {
         }*/
         if (intent != null && intent.getAction() != null) {
             if (intent.getAction().equals("MQTT_CONNECT")) {
-                String server = intent.getStringExtra("MQTT_Server");
-                String user = intent.getStringExtra("MQTT_User");
-                String pass = intent.getStringExtra("MQTT_Pass");
-                initializeMqtt(server, user, pass);
+                connectMqtt();
             }else if (intent.getAction().equals("MQTT_DISCONNECT")) {
+                if (mqttAndroidClient != null) {
+                    if (mqttAndroidClient.isConnected()) {
+                        Log.d(TAG, "Connected");
+                    } else {
+                        Log.d(TAG, "Disconnected");
+                    }
+                    disconnectMqtt();
+                }
+            }else if (intent.getAction().equals("MQTT_RECONNECT")) {
                 if (mqttAndroidClient != null) {
                     if (mqttAndroidClient.isConnected()) {
                         Log.d(TAG, "1Connected");
@@ -188,6 +208,7 @@ public class MQTTservice extends Service {
                     }
                     disconnectMqtt();
                 }
+                connectMqtt();
             }else if (intent.getAction().equals("MQTT_PUBLISH")) {
                 String topic = intent.getStringExtra("topic");
                 String message = intent.getStringExtra("message");

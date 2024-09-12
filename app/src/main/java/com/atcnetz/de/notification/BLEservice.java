@@ -510,10 +510,11 @@ public class BLEservice extends Service {
                 editor.apply();
                 postToastMessage("HeartRateTest: " + response.substring(8));
             } else if (isInCMD(response, "AT+ALMON")) {
-                postToastMessage("Got alarm: " + response.substring(9));
+                String alert_lvl = response.substring(9);
+                postToastMessage("Got alarm: <" + alert_lvl + ">");
                 Intent mqttServiceIntent = new Intent(getApplicationContext(), MQTTservice.class);
                 mqttServiceIntent.setAction("MQTT_ALERT");
-                mqttServiceIntent.putExtra("alertLevel", 1);
+                mqttServiceIntent.putExtra("alertLevel", alert_lvl);
                 startService(mqttServiceIntent);
             }
         }
